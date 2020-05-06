@@ -1,12 +1,12 @@
-import React               from "react"
-import { mount, render }           from "enzyme"
+import React                              from "react"
+import { mount }                  from "enzyme"
 import root                               from "react-shadow"
 import { StyleProvider, withStyleSheets } from "../src"
 
 describe("Style Engine Component", () => {
 
   it("should mount with styleSheets", () => {
-    const Component = ({ ...props }) => <root.div {...props}>I am a div</root.div>
+    const Component = ({ ...props }) => <root.div { ...props }>I am a div</root.div>
     const StyledComponent = withStyleSheets(Component, {
       style: {
         color: "blue"
@@ -14,7 +14,7 @@ describe("Style Engine Component", () => {
       styleEngineTag: "Component",
     });
 
-    const wrapper = mount(<StyleProvider><StyledComponent /></StyleProvider>);
+    const wrapper = mount(<StyleProvider><StyledComponent/></StyleProvider>);
 
     const comp = wrapper.find(Component);
     expect(comp.prop("styleSheets")).toHaveLength(1);
@@ -26,8 +26,8 @@ describe("Style Engine Component", () => {
     const node = div.getDOMNode();
 
     expect(node.shadowRoot.adoptedStyleSheets).toHaveLength(1);
-    expect(node.shadowRoot.adoptedStyleSheets[0].cssRules[0].style).toEqual(expect.objectContaining({
-      color: 'blue'
+    expect(node.shadowRoot.adoptedStyleSheets[ 0 ].cssRules[ 0 ].style).toEqual(expect.objectContaining({
+      color: "blue"
     }));
   })
 })
