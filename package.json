@@ -1,0 +1,51 @@
+{
+  "name": "react-style-engine",
+  "version": "1.0.0",
+  "description": "An in script style engine to be used with state/redux and shadow dom",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "$(npm bin)/babel src/index.jsx --out-dir dist",
+    "test": "$(npm bin)/eslint && $(npm bin)/jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/curiosity26/react-style-engine.git"
+  },
+  "keywords": [
+    "react",
+    "css",
+    "shadow",
+    "dom"
+  ],
+  "author": "Alex Boyce <curiosity26@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/curiosity26/react-style-engine/issues"
+  },
+  "homepage": "https://github.com/curiosity26/react-style-engine#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.6",
+    "@babel/plugin-proposal-object-rest-spread": "^7.9.6",
+    "@babel/plugin-transform-react-jsx": "^7.9.4",
+    "@babel/preset-env": "^7.9.6",
+    "@babel/preset-react": "^7.9.4",
+    "@types/jest": "^25.2.1",
+    "babel-eslint": "^10.1.0",
+    "babel-preset-minify": "^0.5.1",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.2",
+    "eslint": "^6.8.0",
+    "jest": "^26.0.1",
+    "prop-types": "^15.7.2",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-shadow": "^18.1.0"
+  },
+  "peerDependencies": {
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0",
+    "construct-style-sheets-polyfill": "^2.3.5",
+    "react-shadow": "^18.1.0"
+  }
+}

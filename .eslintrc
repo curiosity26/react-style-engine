@@ -1,0 +1,112 @@
+{
+  "parser": "babel-eslint",
+  "extends": "plugin:react/recommended",
+  "parserOptions": {
+    "ecmaVersion": 8,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true,
+      "experimentalObjectRestSpread": true
+    }
+  },
+  "plugins": [
+    "react"
+  ],
+  "env": {
+    "shared-node-browser": true,
+    "jest": true,
+    "commonjs": true
+  },
+  "rules": {
+    "indent": [
+      "error",
+      2,
+      {
+        "SwitchCase": 1,
+        "VariableDeclarator": "first",
+        "FunctionDeclaration": {
+          "parameters": "first"
+        },
+        "FunctionExpression": {
+          "parameters": "first"
+        },
+        "ArrayExpression": "first",
+        "ObjectExpression": "first",
+        "MemberExpression": "off",
+        "ignoredNodes": [ "JSXAttribute", "JSXSpreadAttribute" ]
+      }
+    ],
+    "quotes": [
+      "error",
+      "double"
+    ],
+    "array-bracket-spacing": [
+      "error",
+      "always"
+    ],
+    "object-curly-spacing": [
+      "error",
+      "always"
+    ],
+    "arrow-body-style": [
+      "error",
+      "as-needed"
+    ],
+    "arrow-spacing": "error",
+    "no-return-await": "error",
+    "require-await": "error",
+    "camelcase": "error",
+    "yoda": [
+      "error",
+      "always"
+    ],
+    "space-in-parens": "error",
+    "no-useless-catch": "error",
+    "radix": "error",
+    "block-spacing": "error",
+    "comma-dangle": [
+      "error",
+      "always-multiline"
+    ],
+    "comma-style": [
+      "error",
+      "last"
+    ],
+    "no-unused-vars": [
+      "error",
+      {
+        "args": "after-used",
+        "vars": "local"
+      }
+    ],
+    "react/jsx-curly-spacing": [
+      2,
+      "always"
+    ],
+    "react/jsx-indent": [
+      2,
+      2,
+      {
+        "checkAttributes": true,
+        "indentLogicalExpressions": true
+      }
+    ],
+    "react/prefer-es6-class": 0,
+    "react/jsx-filename-extension": 0,
+    "no-use-before-define": [
+      2,
+      {
+        "functions": false
+      }
+    ],
+    "prefer-const": 1
+  },
+  "globals": {
+    "__dirname": "readonly"
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  }
+}
