@@ -1,6 +1,7 @@
 import getComponentName           from "./getComponentName"
 import constructStyleSheets       from "./constructStyleSheets"
 import constructGlobalStyleSheets from "./constructGlobalStyleSheets"
+import hash                       from "./hash"
 import memoize                    from "./memoize"
 
 const memoizedConstructGlobalStyleSheets = memoize(constructGlobalStyleSheets)
@@ -14,9 +15,9 @@ export default ({
   setComponentsStyles = () => {},
   setScales = () => {},
 }) => {
-  let pendingGlobals = Object.assign(global)
-  let pendingComponents = Object.assign(components)
-  let pendingScales = Object.assign(scales)
+  let pendingGlobals = Object.assign({}, global)
+  let pendingComponents = Object.assign({},components)
+  let pendingScales = Object.assign({}, scales)
 
   return {
     addGlobalStyle(selector, style) {
@@ -33,13 +34,12 @@ export default ({
       return this
     },
     addComponentStyle(component, style) {
-
       const componentName = getComponentName(component)
       if (!componentName) {
         throw new Error("Component must be a valid React component or the name of a valid React component.")
       }
 
-      pendingComponents[ componentName ] = Object.assign({}, style)
+      pendingComponents[ componentName ] = Object.assign({}, (pendingComponents[ componentName ] || {}), style)
 
       return this
     },
@@ -75,20 +75,22 @@ export default ({
                            || ("object" === typeof Component && Component.hasOwnProperty("$$typeof"))
       const definition = isRenderable ? this.getComponentStyleDefinition(Component) : Component
 
+      if (!definition) return []
+
       return memoizedConstructStyleSheets(definition, scales)
     },
     clearGlobalStyleChanges() {
-      pendingGlobals = Object.assign(global)
+      pendingGlobals = Object.assign({}, global)
 
       return this
     },
     clearComponentStyleChanges() {
-      pendingComponents = Object.assign(components)
+      pendingComponents = Object.assign({}, components)
 
       return this
     },
     clearScaleChanges() {
-      pendingScales = Object.assign(scales)
+      pendingScales = Object.assign({}, scales)
 
       return this
     },
@@ -98,19 +100,19 @@ export default ({
                  .clearScaleChanges()
     },
     save() {
-      const updatedGlobals = Object.assign(global, pendingGlobals)
-      const updatedComponents = Object.assign(components, pendingComponents)
-      const updatedScales = Object.assign(scales, pendingScales)
+      const updatedGlobals = Object.assign({}, global, pendingGlobals)
+      const updatedComponents = Object.assign({}, components, pendingComponents)
+      const updatedScales = Object.assign({}, scales, pendingScales)
 
-      if (!Object.is(updatedGlobals, global)) {
+      if (hash(updatedGlobals) !== hash(global)) {
         setGlobalStyles(updatedGlobals)
       }
 
-      if (!Object.is(updatedComponents, components)) {
+      if (hash(updatedComponents) !== hash(components)) {
         setComponentsStyles(updatedComponents)
       }
 
-      if (!Object.is(updatedScales, scales)) {
+      if (hash(updatedScales) !== hash(scales)) {
         setScales(updatedScales)
       }
     },

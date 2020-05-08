@@ -1,6 +1,8 @@
 import constructStyleSheets from "./constructStyleSheets"
 
 export default (global, scales = {}) => {
+  let styleSheets = []
+
   for (const selector in global) {
     if (!global.hasOwnProperty(selector)) continue;
 
@@ -8,6 +10,8 @@ export default (global, scales = {}) => {
 
     if (!definition) continue;
 
-    return constructStyleSheets(definition, scales, selector)
+    styleSheets = [...styleSheets, ...constructStyleSheets(definition, scales, selector)]
   }
+
+  return styleSheets
 }

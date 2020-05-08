@@ -33,7 +33,7 @@ const reduceStyles = scales => (def = { directives: [], hostRules: {}, childRule
 
   // Extract styles for scales
   if (key in scales) {
-    return { ...def, [ key ]: Object.entries(value).reduce(reduceStyles(scales)) }
+    return { ...def, [ key ]: Object.entries(value).reduce(reduceStyles(scales), {}) }
   }
 
   // Extract regular css rules for use within a selector
@@ -66,7 +66,7 @@ const buildStyleSheet = ({ rules, hostRules = {}, childRules = {}, media, select
                                     .map(stringifyStyle(selector))
   const childSelectorBody = Object.entries(childRules)
                                   .filter(([ selector, rule ]) => selector && ("undefined" !== typeof rule || null !== rule))
-                                  .map(([ selector, rules ]) => `${selector} {
+                                  .map(([ selector, rules ]) => `${ selector } {
                                             ${ constructStyleFromDefinition(rules) }
                                           }`)
 
@@ -90,12 +90,14 @@ const buildStyleSheet = ({ rules, hostRules = {}, childRules = {}, media, select
 }
 
 export default (definition, scales = {}, selector = ":host") => {
+  if (!definition) return [];
+
   const { directives, hostRules, childRules, rules, ...scaleRules } = Object.entries(definition)
                                                                             .reduce(reduceStyles(scales), {});
   const computedStyleSheets = [ buildStyleSheet({ selector, rules, hostRules, childRules, directives }) ]
   const scaleStyleSheets = Object.entries(scaleRules)
                                  .reduce((styleSheets, [ scale, { rules, hostRules, childRules } ]) => {
-                                   if (Object.is({}, rules) && Object.is({}, hostRules) && Object.is({}, childRules)) {
+                                   if (!Object.keys(rules).length && !Object.keys(hostRules).length && !Object.keys(childRules).length) {
                                      return styleSheets
                                    }
 
@@ -107,5 +109,5 @@ export default (definition, scales = {}, selector = ":host") => {
                                    ]
                                  }, [])
 
-  return computedStyleSheets.concat(scaleStyleSheets).filter(sheet => sheet)
+  return [ ...computedStyleSheets, ...scaleStyleSheets ].filter(sheet => sheet)
 }

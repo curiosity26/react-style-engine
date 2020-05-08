@@ -1,6 +1,10 @@
 export default (component) => {
+  if (typeof component === 'string') {
+    return component
+  }
+
   if (component.type) {
-    component.type.styleName || component.type.displayName
+    return component.type.styleName || component.type.displayName || component.styleEngineTag
   }
 
   return component.styleEngineTag
