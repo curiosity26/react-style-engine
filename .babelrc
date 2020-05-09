@@ -10,7 +10,7 @@
   ],
   "env": {
     "production": {
-      "plugins": ["minify"]
+      "presets": ["minify"]
     }
   },
   "plugins": [

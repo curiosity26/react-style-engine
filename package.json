@@ -4,7 +4,7 @@
   "description": "An in script style engine to be used with state/redux and shadow dom",
   "main": "dist/index.js",
   "scripts": {
-    "build": "$(npm bin)/babel src --out-dir dist",
+    "build": "NODE_ENV=production $(npm bin)/babel src --out-dir dist",
     "test": "$(npm bin)/eslint && $(npm bin)/jest"
   },
   "repository": {
@@ -48,5 +48,6 @@
     "react-dom": "^16.8.0",
     "construct-style-sheets-polyfill": "^2.3.5",
     "react-shadow": "^18.1.0"
-  }
+  },
+  "files": [ "dist/**/*" ]
 }
