@@ -6,9 +6,13 @@
       {
         "targets": "> 0.25%, not dead"
       }
-    ],
-    "minify"
+    ]
   ],
+  "env": {
+    "production": {
+      "plugins": ["minify"]
+    }
+  },
   "plugins": [
     "@babel/plugin-proposal-object-rest-spread",
     "@babel/plugin-transform-react-jsx"

@@ -1,7 +1,7 @@
 import hyphenateStyleName from "./hyphenateStyleName"
 
 const convertStyle = (field, value) => {
-  if ("function" === typeof value) return convertStyle(value())
+  if ("function" === typeof value) return convertStyle(field, value())
   if (Array.isArray(value)) return `${ hyphenateStyleName(field) }: ${ value.join(" ") };\n`
 
   if ("object" === typeof value) {
@@ -9,15 +9,10 @@ const convertStyle = (field, value) => {
                  .map(([ key, rule ]) =>
                    rule && `${ field }-${ hyphenateStyleName(key) }: ${ rule };`)
                  .filter(rule => rule)
-                 .join("\n")
+                 .join("\n") + '\n'
   }
 
-  try {
-    return `${ hyphenateStyleName(field) }: ${ value };\n`
-  } catch (e) {
-    // log but don't throw the error
-    console.error(e)
-  }
+  return `${ hyphenateStyleName(field) }: ${ value };\n`
 }
 
 export default (definition = {}) =>

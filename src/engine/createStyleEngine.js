@@ -1,4 +1,3 @@
-import getComponentName           from "./getComponentName"
 import constructStyleSheets       from "./constructStyleSheets"
 import constructGlobalStyleSheets from "./constructGlobalStyleSheets"
 import hash                       from "./hash"
@@ -34,12 +33,14 @@ export default ({
       return this
     },
     addComponentStyle(component, style) {
-      const componentName = getComponentName(component)
-      if (!componentName) {
+      const { styleEngineTag } = "string" === typeof component ? { styleEngineTag: component } : component
+
+
+      if (!styleEngineTag) {
         throw new Error("Component must be a valid React component or the name of a valid React component.")
       }
 
-      pendingComponents[ componentName ] = Object.assign({}, (pendingComponents[ componentName ] || {}), style)
+      pendingComponents[ styleEngineTag ] = Object.assign({}, (pendingComponents[ styleEngineTag ] || {}), style)
 
       return this
     },
@@ -51,15 +52,14 @@ export default ({
     getGlobalStyles() {
       return global
     },
-    getComponentName,
     getComponentStyleDefinition(component) {
-      const componentName = getComponentName(component)
+      const { styleEngineTag } = component
 
-      if (!componentName) {
+      if (!styleEngineTag) {
         throw new Error("Component must be a valid React component or the name of a valid React component.")
       }
 
-      return components[ componentName ]
+      return components[ styleEngineTag ]
     },
     getScales() {
       return scales

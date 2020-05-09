@@ -10,13 +10,16 @@ const reduceStyles = scales => (def = { directives: [], hostRules: {}, childRule
     return {
       ...def, directives: [ ...directives, `${ key } ${
         // In the case of key being @keyframes, the value should be an object
-        "object" === typeof value ? constructStyleFromDefinition(value) : value
+        "object" === typeof value
+        ? `{\n${ Object.entries(value)
+                       .reduce((s, [ f, v ]) => `${ s } ${ f } {${ constructStyleFromDefinition(v) }}\n`, "") }}`
+        : value
       };` ],
     }
   }
 
   // Extract :host... styles: i.e. :host(class_on_host), :host:after, :host .child
-  if ([ "(", ":", " ", "&" ].includes(key[ 0 ])) {
+  if ([ "(", ":", " ", "&" ].includes(key[ 0 ]) || "-context" === key) {
     const { hostRules = {} } = def
     const selector = "&" === key[ 0 ] ? key.substring(1) : key
 
@@ -47,20 +50,11 @@ const stringifyStyle = selector => ([ innerSelector, rules ]) =>
     ${ constructStyleFromDefinition(rules) }
   }`
 
-const tryCatch = fn => (...props) => {
-  try {
-    fn(...props)
-  } catch (e) {
-    // Suppress error, but log it
-    console.error(e)
-  }
-}
-
 const buildStyleSheet = ({ rules, hostRules = {}, childRules = {}, media, selector = ":host", directives = [] }) => {
   const styleSheet = new CSSStyleSheet()
   if (media) styleSheet.media = media
 
-  const selectorBody = constructStyleFromDefinition(rules)
+  const selectorBody = rules && constructStyleFromDefinition(rules)
   const wrappedSelectorBody = Object.entries(hostRules)
                                     .filter(([ key, rule ]) => key && ("undefined" !== typeof rule || null !== rule))
                                     .map(stringifyStyle(selector))
@@ -71,9 +65,9 @@ const buildStyleSheet = ({ rules, hostRules = {}, childRules = {}, media, select
                                           }`)
 
 
-  if (!selectorBody && !wrappedSelectorBody.length && !childSelectorBody.length) return
+  if (!selectorBody && !wrappedSelectorBody.length && !childSelectorBody.length && !directives.length) return
 
-  const insertRule = tryCatch(rule => styleSheet.insertRule(rule))
+  const insertRule = rule => !!rule && styleSheet.insertRule(rule)
 
   directives.forEach(insertRule)
 
@@ -96,8 +90,8 @@ export default (definition, scales = {}, selector = ":host") => {
                                                                             .reduce(reduceStyles(scales), {});
   const computedStyleSheets = [ buildStyleSheet({ selector, rules, hostRules, childRules, directives }) ]
   const scaleStyleSheets = Object.entries(scaleRules)
-                                 .reduce((styleSheets, [ scale, { rules, hostRules, childRules } ]) => {
-                                   if (!Object.keys(rules).length && !Object.keys(hostRules).length && !Object.keys(childRules).length) {
+                                 .reduce((styleSheets, [ scale, { rules = {}, hostRules = {}, childRules = {}, directives = [] } ]) => {
+                                   if (!Object.keys(rules).length && !Object.keys(hostRules).length && !Object.keys(childRules).length && !directives.length) {
                                      return styleSheets
                                    }
 
@@ -105,7 +99,7 @@ export default (definition, scales = {}, selector = ":host") => {
 
                                    return [
                                      ...styleSheets,
-                                     buildStyleSheet({ selector, rules, hostRules, childRules, media }),
+                                     buildStyleSheet({ selector, rules, hostRules, childRules, directives, media }),
                                    ]
                                  }, [])
 
