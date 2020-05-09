@@ -1,5 +1,5 @@
 {
-  "name": "react-style-engine",
+  "name": "@curiosity26/react-style-engine",
   "version": "1.0.0",
   "description": "An in script style engine to be used with state/redux and shadow dom",
   "main": "dist/index.js",
