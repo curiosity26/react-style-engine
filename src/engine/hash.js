@@ -1,7 +1,7 @@
 export const stringHash = (string) => {
   let hash = 0;
 
-  if (0 === string.length) return hash;
+  if (!string || 0 === string.length) return hash;
 
   for (let i = 0; i < string.length; i++) {
     const char = string.charCodeAt(i);

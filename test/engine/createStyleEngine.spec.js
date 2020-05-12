@@ -7,6 +7,9 @@ MyComponent.styleEngineTag = "MyComponent"
 
 describe("Create Style Engine", () => {
   let styleEngine
+  let getGlobalStyles
+  let getComponentsStyles
+  let getScales
   let setGlobalStyles
   let setComponentsStyles
   let setScales
@@ -16,14 +19,17 @@ describe("Create Style Engine", () => {
     let components = {}
     let scales = {}
 
+    getGlobalStyles = jest.fn(() => global)
+    getComponentsStyles = jest.fn(() => components)
+    getScales = jest.fn(() => scales)
     setGlobalStyles = jest.fn(gs => Object.assign(global, gs))
     setComponentsStyles = jest.fn(comp => Object.assign(components, comp))
     setScales = jest.fn(sc => Object.assign(scales, sc))
 
     styleEngine = createStyleEngine({
-      global,
-      components,
-      scales,
+      getGlobalStyles,
+      getComponentsStyles,
+      getScales,
       setGlobalStyles,
       setComponentsStyles,
       setScales,
@@ -38,6 +44,9 @@ describe("Create Style Engine", () => {
     it("should not fire sets on save if no changes", () => {
       styleEngine.save()
 
+      expect(getGlobalStyles).toHaveBeenCalled()
+      expect(getComponentsStyles).toHaveBeenCalled()
+      expect(getScales).toHaveBeenCalled()
       expect(setGlobalStyles).not.toHaveBeenCalled()
       expect(setScales).not.toHaveBeenCalled()
       expect(setComponentsStyles).not.toHaveBeenCalled()
@@ -57,6 +66,9 @@ describe("Create Style Engine", () => {
           }
         })
 
+        expect(getGlobalStyles).toHaveBeenCalled()
+        expect(getComponentsStyles).toHaveBeenCalled()
+        expect(getScales).toHaveBeenCalled()
         expect(setGlobalStyles).toHaveBeenCalled()
         expect(setScales).not.toHaveBeenCalled()
         expect(setComponentsStyles).not.toHaveBeenCalled()
@@ -85,6 +97,9 @@ describe("Create Style Engine", () => {
           fontStyle: "sans-serif"
         })
 
+        expect(getGlobalStyles).toHaveBeenCalled()
+        expect(getComponentsStyles).toHaveBeenCalled()
+        expect(getScales).toHaveBeenCalled()
         expect(setGlobalStyles).not.toHaveBeenCalled()
         expect(setScales).not.toHaveBeenCalled()
         expect(setComponentsStyles).toHaveBeenCalled()
@@ -114,6 +129,9 @@ describe("Create Style Engine", () => {
 
         expect(styleEngine.getScale("2x")).toEqual("(min-resolution: 144dpi)")
 
+        expect(getGlobalStyles).toHaveBeenCalled()
+        expect(getComponentsStyles).toHaveBeenCalled()
+        expect(getScales).toHaveBeenCalled()
         expect(setGlobalStyles).not.toHaveBeenCalled()
         expect(setScales).toHaveBeenCalled()
         expect(setComponentsStyles).not.toHaveBeenCalled()
@@ -139,6 +157,9 @@ describe("Create Style Engine", () => {
                    .clearGlobalStyleChanges()
                    .save()
 
+        expect(getGlobalStyles).toHaveBeenCalled()
+        expect(getComponentsStyles).toHaveBeenCalled()
+        expect(getScales).toHaveBeenCalled()
         expect(styleEngine.getGlobalStyles()).toEqual({})
         expect(styleEngine.getComponentStyleDefinition(MyComponent)).toEqual({ color: "blue" })
         expect(styleEngine.getScales()).toEqual({ "2x": "(min-resolution: 144dpi)" })
@@ -151,6 +172,9 @@ describe("Create Style Engine", () => {
                    .clearComponentStyleChanges()
                    .save()
 
+        expect(getGlobalStyles).toHaveBeenCalled()
+        expect(getComponentsStyles).toHaveBeenCalled()
+        expect(getScales).toHaveBeenCalled()
         expect(styleEngine.getComponentStyleDefinition(MyComponent)).toBeUndefined()
       })
 
@@ -161,6 +185,9 @@ describe("Create Style Engine", () => {
                    .clearComponentStyleChanges()
                    .save()
 
+        expect(getGlobalStyles).toHaveBeenCalled()
+        expect(getComponentsStyles).toHaveBeenCalled()
+        expect(getScales).toHaveBeenCalled()
         expect(styleEngine.getGlobalStyles()).toEqual({
           body: {
             fontStyle: "sans-serif",
@@ -177,6 +204,9 @@ describe("Create Style Engine", () => {
                    .clearScaleChanges()
                    .save()
 
+        expect(getGlobalStyles).toHaveBeenCalled()
+        expect(getComponentsStyles).toHaveBeenCalled()
+        expect(getScales).toHaveBeenCalled()
         expect(styleEngine.getScales()).toEqual({})
       })
 
@@ -187,6 +217,9 @@ describe("Create Style Engine", () => {
                    .clearScaleChanges()
                    .save()
 
+        expect(getGlobalStyles).toHaveBeenCalled()
+        expect(getComponentsStyles).toHaveBeenCalled()
+        expect(getScales).toHaveBeenCalled()
         expect(styleEngine.getGlobalStyles()).toEqual({
           body: {
             fontStyle: "sans-serif",
@@ -204,6 +237,9 @@ describe("Create Style Engine", () => {
                  .clear()
                  .save()
 
+      expect(getGlobalStyles).toHaveBeenCalled()
+      expect(getComponentsStyles).toHaveBeenCalled()
+      expect(getScales).toHaveBeenCalled()
       expect(styleEngine.getGlobalStyles()).toEqual({})
       expect(styleEngine.getComponentStyleDefinition(MyComponent)).toBeUndefined()
       expect(styleEngine.getScales()).toEqual({})
@@ -219,6 +255,9 @@ describe("Create Style Engine", () => {
                  .save()
 
       const styleSheets = styleEngine.computeGlobalStyleSheets()
+      expect(getGlobalStyles).toHaveBeenCalled()
+      expect(getComponentsStyles).toHaveBeenCalled()
+      expect(getScales).toHaveBeenCalled()
 
       expect(styleSheets).toHaveLength(1)
 
@@ -261,6 +300,10 @@ describe("Create Style Engine", () => {
       expect(cssRule2x).toBeInstanceOf(CSSRule)
       expect(cssRule2x.cssText).toEqual("body {font-size: 14px;}")
 
+      expect(getGlobalStyles).toHaveBeenCalled()
+      expect(getComponentsStyles).toHaveBeenCalled()
+      expect(getScales).toHaveBeenCalled()
+
     })
 
     it("for component styles", () => {
@@ -280,6 +323,10 @@ describe("Create Style Engine", () => {
       const [ cssRule ] = styleSheet.cssRules
       expect(cssRule).toBeInstanceOf(CSSRule)
       expect(cssRule.cssText).toEqual(":host {font-size: 12px;}")
+
+      expect(getGlobalStyles).toHaveBeenCalled()
+      expect(getComponentsStyles).toHaveBeenCalled()
+      expect(getScales).toHaveBeenCalled()
     })
 
     it("for component styles with multiple media", () => {
@@ -310,6 +357,10 @@ describe("Create Style Engine", () => {
       const [ cssRule2x ] = styleSheet2x.cssRules
       expect(cssRule2x).toBeInstanceOf(CSSRule)
       expect(cssRule2x.cssText).toEqual(":host {font-size: 14px;}")
+
+      expect(getGlobalStyles).toHaveBeenCalled()
+      expect(getComponentsStyles).toHaveBeenCalled()
+      expect(getScales).toHaveBeenCalled()
     })
   })
 })

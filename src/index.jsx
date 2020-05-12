@@ -1,20 +1,29 @@
-import React, { createContext, useContext, useState, useEffect, forwardRef } from "react"
-import PropTypes                                                             from "prop-types"
-import createStyleEngine                                                     from "./engine/createStyleEngine"
+import React, { createContext, useContext, useEffect, forwardRef } from "react"
+import PropTypes                                                   from "prop-types"
+import createStyleEngine                                           from "./engine/createStyleEngine"
+
+export { default as GlobalStyles }                                                from "./GlobalStyles"
 
 const StyleContext = createContext()
 
 export const StyleProvider = ({ globalStyles = {}, componentStyles = {}, scales: defaultScales = {}, children }) => {
-  const [ global, setGlobalStyles ] = useState(globalStyles)
-  const [ components, setComponentsStyles ] = useState(componentStyles)
-  const [ scales, setScales ] = useState(defaultScales)
-  const engine = createStyleEngine({
+  const global = Object.assign({}, globalStyles);
+  const components = Object.assign({}, componentStyles);
+  const scales = Object.assign({}, defaultScales);
+
+  const styles = {
     global,
     components,
-    scales,
-    setGlobalStyles,
-    setComponentsStyles,
-    setScales,
+    scales
+  }
+
+  const engine = createStyleEngine({
+    getGlobalStyles: () => styles.global,
+    getComponentsStyles: () => styles.components,
+    getScales: () => styles.scales,
+    setGlobalStyles: (updated) => styles.global = updated,
+    setComponentsStyles: (updated) => styles.components = updated,
+    setScales: (updated) => styles.scales = updated,
   })
 
   return <StyleContext.Provider value={ engine }>
@@ -33,21 +42,6 @@ export const StyleConsumer = StyleContext.Consumer
 
 export const useStyleEngine = () => useContext(StyleContext)
 
-export const applyGlobalStylesShadowDOM = (target) => {
-  target = target || document
-
-  if (!document.adoptedStyleSheets) {
-    throw new Error("Global styles cannot by bound to a target which does not support Shadow DOM")
-  }
-
-  const styleEngine = useStyleEngine()
-  const globalStyles = useStyleEngine().getGlobalStyles()
-
-  useEffect(() => {
-    target.adoptedStyleSheets = styleEngine.computeGlobalStyleSheets()
-  }, [ target, globalStyles ])
-}
-
 const processStyle = (style, props = {}) => "function" === typeof style ? style(props) : style
 
 export const withStyle = (
@@ -63,7 +57,7 @@ export const withStyle = (
     const styleEngine = useStyleEngine()
     useEffect(() => {
       styleEngine.addComponentStyle(Component, processStyle(style, compProps)).save()
-    }, [style, compProps])
+    }, [ style, compProps ])
 
     const defaultStyle = styleEngine.getComponentStyleDefinition(Component)
     compProps[ attributeName ] = { ...defaultStyle, ...styleOverride }
@@ -89,25 +83,26 @@ export const withStyleSheets = (
     Component.styleEngineTag = styleEngineTag
   }
 
-  const WrappedComponent = forwardRef(({ style: styleOverride = {}, ...props }, ref) => {
+  const WrappedComponent = forwardRef(({ style: styleOverride = {}, styleEngine, ...props }, ref) => {
     const compProps = { ...(props || {}) }
-    const styleEngine = useStyleEngine()
-    useEffect(() => {
-      styleEngine.addComponentStyle(Component, processStyle(style, compProps)).save()
-    }, [ style, compProps ])
+    const defaultStyle = processStyle(style, compProps);
 
-    // Since computed style sheets are memoized, compute the stylesheets for the component first
-    // The component is likely to be reused many times so this will optimize component loading
-    // by using the already computed stylesheets on n + 1 uses
-    compProps[ attributeName ] = styleEngine.computeStyleSheets(Component)
+    return <StyleConsumer>{ styleEngine => {
+      styleEngine.addComponentStyle(Component, defaultStyle).save()
 
-    if (Object.keys(styleOverride).length) {
-      // Since memoization is based on the style definition, even overrides can
-      // get a speed boost where the same style overrides are reused, even across components
-      compProps[ attributeName ] = compProps[ attributeName ].concat(styleEngine.computeStyleSheets(styleOverride))
-    }
+      // Since computed style sheets are memoized, compute the stylesheets for the component first
+      // The component is likely to be reused many times so this will optimize component loading
+      // by using the already computed stylesheets on n + 1 uses
+      compProps[ attributeName ] = styleEngine.computeStyleSheets(Component)
 
-    return <Component { ...compProps } ref={ ref }/>
+      if (Object.keys(styleOverride).length) {
+        // Since memoization is based on the style definition, even overrides can
+        // get a speed boost where the same style overrides are reused, even across components
+        compProps[ attributeName ] = compProps[ attributeName ].concat(styleEngine.computeStyleSheets(styleOverride))
+      }
+
+      return <Component { ...compProps } ref={ ref }/>
+    } }</StyleConsumer>
   })
 
   WrappedComponent.defaultProps = Component.defaultProps
