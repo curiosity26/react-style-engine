@@ -1,10 +1,10 @@
 {
-  "name": "@curiosity26/react-style-engine",
-  "version": "1.0.0",
+  "name": "react-style-engine",
+  "version": "1.1.0",
   "description": "An in script style engine to be used with state/redux and shadow dom",
   "main": "dist/index.js",
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
+    "registry": "https://npm.pkg.github.com/@curiosity26"
   },
   "scripts": {
     "build": "NODE_ENV=production $(npm bin)/babel src --out-dir dist",
@@ -18,7 +18,8 @@
     "react",
     "css",
     "shadow",
-    "dom"
+    "dom",
+    "webcomponents"
   ],
   "author": "Alex Boyce <curiosity26@gmail.com>",
   "license": "MIT",
