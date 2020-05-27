@@ -10,7 +10,7 @@ export default (global, scales = {}) => {
 
     if (!definition) continue;
 
-    styleSheets = [...styleSheets, ...constructStyleSheets(definition, scales, selector)]
+    styleSheets = [ ...styleSheets, ...constructStyleSheets(definition, scales, selector) ]
   }
 
   return styleSheets

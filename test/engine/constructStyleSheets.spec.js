@@ -18,7 +18,7 @@ describe("constructStyleSheets", () => {
   it("constructs a basic stylesheet", () => {
     const stylesheets = constructStyleSheets({
       fontSize: "12px",
-      color: "blue"
+      color: "blue",
     })
 
     expect(stylesheets).toHaveLength(1)
@@ -32,17 +32,17 @@ describe("constructStyleSheets", () => {
 
     expect(rule).toBeInstanceOf(CSSRule)
     expect(rule.cssText).toEqual(
-      ":host {font-size: 12px; color: blue;}"
+      ":host {font-size: 12px; color: blue;}",
     )
   })
 
   it("constructs a basic stylesheet with selector", () => {
     const stylesheets = constructStyleSheets({
-        fontSize: "12px",
-        color: "blue"
-      },
-      [],
-      "div"
+      fontSize: "12px",
+      color: "blue",
+    },
+    [],
+    "div",
     )
 
     expect(stylesheets).toHaveLength(1)
@@ -56,7 +56,7 @@ describe("constructStyleSheets", () => {
 
     expect(rule).toBeInstanceOf(CSSRule)
     expect(rule.cssText).toEqual(
-      "div {font-size: 12px; color: blue;}"
+      "div {font-size: 12px; color: blue;}",
     )
   })
 
@@ -65,7 +65,7 @@ describe("constructStyleSheets", () => {
       "<.select-child>": {
         color: "red",
         lineHeight: 1.4,
-      }
+      },
     })
 
     expect(stylesheets).toHaveLength(1)
@@ -133,7 +133,7 @@ describe("constructStyleSheets", () => {
 
   it("constructs stylesheet with import", () => {
     const stylesheets = constructStyleSheets({
-      "@import": "url(../style.css)"
+      "@import": "url(../style.css)",
     })
 
     expect(stylesheets).toHaveLength(1)
@@ -156,12 +156,12 @@ describe("constructStyleSheets", () => {
     const stylesheets = constructStyleSheets({
       "@keyframes testAnimation": {
         from: {
-          transform: "translateX(0)"
+          transform: "translateX(0)",
         },
         to: {
-          transform: "translateX(100px)"
-        }
-      }
+          transform: "translateX(100px)",
+        },
+      },
     })
 
     expect(stylesheets).toHaveLength(1)
@@ -192,20 +192,20 @@ describe("constructStyleSheets", () => {
             transform: "rotateZ(0deg)",
           },
           "100%": {
-            transform: "rotateZ(360deg)"
-          }
-        }
+            transform: "rotateZ(360deg)",
+          },
+        },
       },
       "2x": {
         border: {
           width: "1px",
           style: "solid",
           color: "black",
-        }
-      }
+        },
+      },
     }, {
       "desktop": "(min-width: 1024px)",
-      "2x": "(min-resolution: 144dpi)"
+      "2x": "(min-resolution: 144dpi)",
     })
 
     expect(stylesheets).toHaveLength(3)
@@ -245,11 +245,11 @@ describe("constructStyleSheets", () => {
 
   it("should return empty array when scaled styles are empty", () => {
     expect(constructStyleSheets({
-        "2x": {},
-      },
-      {
-        "2x": "(min-resolution: 144dpi)"
-      })
+      "2x": {},
+    },
+    {
+      "2x": "(min-resolution: 144dpi)",
+    }),
     ).toHaveLength(0)
   })
 })

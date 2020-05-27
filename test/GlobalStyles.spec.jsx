@@ -15,8 +15,8 @@ describe("Global Styles", () => {
     </StyleProvider>)
 
     expect(wrapper).toHaveLength(1);
-    expect(wrapper.find('div')).toHaveLength(1)
-    expect(wrapper.find('div').text()).toEqual("I'm mounted baby!")
+    expect(wrapper.find("div")).toHaveLength(1)
+    expect(wrapper.find("div").text()).toEqual("I'm mounted baby!")
 
     expect(document.adoptedStyleSheets).toHaveLength(1)
 

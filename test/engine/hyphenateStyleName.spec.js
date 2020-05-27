@@ -4,13 +4,13 @@ import hyphenateStyleName from "../../src/engine/hyphenateStyleName"
 describe("Hyphenate Style Name", () => {
   it("should hyphenate a style name", () => {
     expect(
-      hyphenateStyleName("someStyleName")
+      hyphenateStyleName("someStyleName"),
     ).toEqual("some-style-name")
   })
 
-  it('should allow ms prefix', () => {
+  it("should allow ms prefix", () => {
     expect(
-      hyphenateStyleName("msSomeStyleName")
+      hyphenateStyleName("msSomeStyleName"),
     ).toEqual("-ms-some-style-name")
   })
 })

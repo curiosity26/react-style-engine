@@ -1,6 +1,6 @@
 {
   "name": "react-style-engine",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "An in script style engine to be used with state/redux and shadow dom",
   "main": "dist/index.js",
   "publishConfig": {
@@ -8,7 +8,7 @@
   },
   "scripts": {
     "build": "NODE_ENV=production $(npm bin)/babel src --out-dir dist",
-    "test": "$(npm bin)/eslint && $(npm bin)/jest"
+    "test": "$(npm bin)/eslint src test && $(npm bin)/jest"
   },
   "repository": {
     "type": "git",
@@ -41,6 +41,7 @@
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.2",
     "eslint": "^6.8.0",
+    "eslint-plugin-react": "^7.20.0",
     "jest": "^26.0.1",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
@@ -50,8 +51,10 @@
   "peerDependencies": {
     "react": "^16.8.0",
     "react-dom": "^16.8.0",
-    "construct-style-sheets-polyfill": "^2.3.5",
     "react-shadow": "^18.1.0"
+  },
+  "optionalDependencies": {
+    "construct-style-sheets-polyfill": "^2.3.5"
   },
   "files": [
     "dist/**/*"

@@ -11,9 +11,9 @@ const reduceStyles = scales => (def = { directives: [], hostRules: {}, childRule
       ...def, directives: [ ...directives, `${ key } ${
         // In the case of key being @keyframes, the value should be an object
         "object" === typeof value
-        ? `{\n${ Object.entries(value)
+          ? `{\n${ Object.entries(value)
                        .reduce((s, [ f, v ]) => `${ s } ${ f } {${ constructStyleFromDefinition(v) }}\n`, "") }}`
-        : value
+          : value
       };` ],
     }
   }

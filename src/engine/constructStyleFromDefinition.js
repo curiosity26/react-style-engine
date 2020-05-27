@@ -9,7 +9,7 @@ const convertStyle = (field, value) => {
                  .map(([ key, rule ]) =>
                    rule && `${ field }-${ hyphenateStyleName(key) }: ${ rule };`)
                  .filter(rule => rule)
-                 .join("\n") + '\n'
+                 .join("\n") + "\n"
   }
 
   return `${ hyphenateStyleName(field) }: ${ value };\n`

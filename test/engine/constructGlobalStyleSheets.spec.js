@@ -16,7 +16,7 @@ describe("constructGlobalStyleSheets", () => {
       body: {
         fontSize: "12px",
         color: "blue",
-      }
+      },
     })
 
     expect(stylesheets).toHaveLength(1)
@@ -34,17 +34,17 @@ describe("constructGlobalStyleSheets", () => {
 
   it("should generate multiple stylesheets for all scales", () => {
     const stylesheets = constructGlobalStyleSheets({
-        body: {
-          fontSize: "12px",
-          color: "blue",
-          "2x": {
-            fontSize: "14px",
-          },
+      body: {
+        fontSize: "12px",
+        color: "blue",
+        "2x": {
+          fontSize: "14px",
         },
       },
-      {
-        "2x": "(min-resolution: 144dpi)"
-      })
+    },
+    {
+      "2x": "(min-resolution: 144dpi)",
+    })
 
     expect(stylesheets).toHaveLength(2)
 

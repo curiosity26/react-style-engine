@@ -15,9 +15,9 @@ describe("Create Style Engine", () => {
   let setScales
 
   beforeEach(() => {
-    let global = {}
-    let components = {}
-    let scales = {}
+    const global = {}
+    const components = {}
+    const scales = {}
 
     getGlobalStyles = jest.fn(() => global)
     getComponentsStyles = jest.fn(() => components)
@@ -62,8 +62,8 @@ describe("Create Style Engine", () => {
 
         expect(styleEngine.getGlobalStyles()).toEqual({
           body: {
-            fontStyle: "sans-serif"
-          }
+            fontStyle: "sans-serif",
+          },
         })
 
         expect(getGlobalStyles).toHaveBeenCalled()
@@ -94,7 +94,7 @@ describe("Create Style Engine", () => {
         styleEngine.save()
 
         expect(styleEngine.getComponentStyleDefinition(MyComponent)).toEqual({
-          fontStyle: "sans-serif"
+          fontStyle: "sans-serif",
         })
 
         expect(getGlobalStyles).toHaveBeenCalled()
@@ -124,7 +124,7 @@ describe("Create Style Engine", () => {
         styleEngine.save()
 
         expect(styleEngine.getScales()).toEqual({
-          "2x": "(min-resolution: 144dpi)"
+          "2x": "(min-resolution: 144dpi)",
         })
 
         expect(styleEngine.getScale("2x")).toEqual("(min-resolution: 144dpi)")
@@ -191,7 +191,7 @@ describe("Create Style Engine", () => {
         expect(styleEngine.getGlobalStyles()).toEqual({
           body: {
             fontStyle: "sans-serif",
-          }
+          },
         })
         expect(styleEngine.getComponentStyleDefinition(MyComponent)).toBeUndefined()
         expect(styleEngine.getScales()).toEqual({ "2x": "(min-resolution: 144dpi)" })
@@ -223,7 +223,7 @@ describe("Create Style Engine", () => {
         expect(styleEngine.getGlobalStyles()).toEqual({
           body: {
             fontStyle: "sans-serif",
-          }
+          },
         })
         expect(styleEngine.getComponentStyleDefinition(MyComponent)).toEqual({ color: "blue" })
         expect(styleEngine.getScales()).toEqual({})
@@ -249,9 +249,9 @@ describe("Create Style Engine", () => {
   describe("computes style sheets", () => {
     it("for global styles", () => {
       styleEngine.addGlobalStyle("body", {
-                   fontFamily: "sans-serif",
-                   fontSize: "12px",
-                 })
+        fontFamily: "sans-serif",
+        fontSize: "12px",
+      })
                  .save()
 
       const styleSheets = styleEngine.computeGlobalStyleSheets()
@@ -272,12 +272,12 @@ describe("Create Style Engine", () => {
 
     it("for global styles with multiple media", () => {
       styleEngine.addGlobalStyle("body", {
-                   fontFamily: "sans-serif",
-                   fontSize: "12px",
-                   "2x": {
-                     fontSize: "14px",
-                   }
-                 })
+        fontFamily: "sans-serif",
+        fontSize: "12px",
+        "2x": {
+          fontSize: "14px",
+        },
+      })
                  .addScale("2x", "(min-resolution: 144dpi)")
                  .save()
 
@@ -308,8 +308,8 @@ describe("Create Style Engine", () => {
 
     it("for component styles", () => {
       styleEngine.addComponentStyle(MyComponent, {
-                   fontSize: "12px"
-                 })
+        fontSize: "12px",
+      })
                  .save()
 
       const styleSheets = styleEngine.computeStyleSheets(MyComponent)
@@ -331,11 +331,11 @@ describe("Create Style Engine", () => {
 
     it("for component styles with multiple media", () => {
       styleEngine.addComponentStyle(MyComponent, {
-                   fontSize: "12px",
-                   "2x": {
-                     fontSize: "14px",
-                   }
-                 })
+        fontSize: "12px",
+        "2x": {
+          fontSize: "14px",
+        },
+      })
                  .addScale("2x", "(min-resolution: 144dpi)")
                  .save()
 

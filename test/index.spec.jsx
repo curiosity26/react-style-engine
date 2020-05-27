@@ -9,9 +9,8 @@ describe("Style Engine Component", () => {
     const Component = (props) => <root.div { ...props }>I am a div</root.div>
     const StyledComponent = withStyleSheets(Component, {
       style: {
-        color: "blue"
+        color: "blue",
       },
-      styleEngineTag: "Component",
     });
 
     const wrapper = mount(<StyleProvider><StyledComponent/></StyleProvider>);
@@ -27,20 +26,23 @@ describe("Style Engine Component", () => {
 
     expect(node.shadowRoot.adoptedStyleSheets).toHaveLength(1);
     expect(node.shadowRoot.adoptedStyleSheets[ 0 ].cssRules[ 0 ].style).toEqual(expect.objectContaining({
-      color: "blue"
+      color: "blue",
     }));
   })
 
   it("should mount with default component style", () => {
     const ref = createRef()
     const Component = React.forwardRef((props, ref) => <root.div { ...props } ref={ ref }>I am a div</root.div>)
-    const StyledComponent = withStyleSheets(Component, { styleEngineTag: "Component" })
+    Component.displayName = "Component"
+
+    const StyledComponent = withStyleSheets(Component)
     const wrapper = mount(<StyleProvider componentStyles={ {
       Component: {
         color: "blue",
-      }
+      },
     } }><StyledComponent ref={ ref }/></StyleProvider>);
 
+    expect(StyledComponent.displayName).toEqual("withStyleSheets(Component)")
     const comp = wrapper.find(Component)
 
     expect(comp.prop("styleSheets")).toHaveLength(1)
@@ -53,19 +55,20 @@ describe("Style Engine Component", () => {
 
     expect(node.shadowRoot.adoptedStyleSheets).toHaveLength(1)
     expect(node.shadowRoot.adoptedStyleSheets[ 0 ].cssRules[ 0 ].style).toEqual(expect.objectContaining({
-      color: "blue"
+      color: "blue",
     }))
   })
 
   it("should mount with default component style and override", () => {
     const ref = createRef()
     const Component = React.forwardRef((props, ref) => <root.div { ...props } ref={ ref }>I am a div</root.div>)
-    const StyledComponent = withStyleSheets(Component, { styleEngineTag: "Component" })
+    Component.displayName = "Component"
+    const StyledComponent = withStyleSheets(Component)
     const wrapper = mount(<StyleProvider componentStyles={ {
       Component: {
         color: "blue",
         fontSize: "12px",
-      }
+      },
     } }><StyledComponent ref={ ref } style={ {
       color: "red",
     } }/></StyleProvider>);
@@ -88,15 +91,14 @@ describe("Style Engine Component", () => {
   })
 
   it("should mount with style component", () => {
+    // eslint-disable-next-line react/prop-types
     const Component = ({ style }) => <div style={ style }>Test</div>
-    const StyledComponent = withStyle(Component, {
-      styleEngineTag: "Component"
-    })
+    const StyledComponent = withStyle(Component)
 
     const wrapper = mount(<StyleProvider componentStyles={ {
       Component: {
         fontSize: "12px",
-      }
+      },
     } }>
       <StyledComponent/>
     </StyleProvider>)

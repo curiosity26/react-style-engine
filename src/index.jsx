@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, forwardRef } from "react"
 import PropTypes                                                   from "prop-types"
 import createStyleEngine                                           from "./engine/createStyleEngine"
 
-export { default as GlobalStyles }                                                from "./GlobalStyles"
+export { default as GlobalStyles }                                 from "./GlobalStyles"
 
 const StyleContext = createContext()
 
@@ -14,7 +14,7 @@ export const StyleProvider = ({ globalStyles = {}, componentStyles = {}, scales:
   const styles = {
     global,
     components,
-    scales
+    scales,
   }
 
   const engine = createStyleEngine({
@@ -48,9 +48,7 @@ export const withStyle = (
   Component,
   { attributeName = "style", styleEngineTag, style = {} } = {},
 ) => {
-  if (styleEngineTag) {
-    Component.styleEngineTag = styleEngineTag
-  }
+  Component.styleEngineTag = Component.styleEngineTag || styleEngineTag || Component.displayName || Component.name
 
   const WrappedComponent = forwardRef(({ style: styleOverride = {}, ...props }, ref) => {
     const compProps = { ...(props || {}) }
@@ -66,7 +64,7 @@ export const withStyle = (
   })
 
   WrappedComponent.defaultProps = Component.defaultProps
-  WrappedComponent.displayName = Component.displayName
+  WrappedComponent.displayName = `withStyles(${Component.styleEngineTag})`
   WrappedComponent.propTypes = {
     ...(Component.propTypes || {}),
     style: PropTypes.object,
@@ -79,16 +77,14 @@ export const withStyleSheets = (
   Component,
   { attributeName = "styleSheets", styleEngineTag, style = {} } = {},
 ) => {
-  if (styleEngineTag) {
-    Component.styleEngineTag = styleEngineTag
-  }
+  Component.styleEngineTag = Component.styleEngineTag || styleEngineTag || Component.displayName || Component.name
 
-  const WrappedComponent = forwardRef(({ style: styleOverride = {}, styleEngine, ...props }, ref) => {
+  const WrappedComponent = forwardRef(({ style: styleOverride = {}, ...props }, ref) => {
     const compProps = { ...(props || {}) }
     const defaultStyle = processStyle(style, compProps);
 
     return <StyleConsumer>{ styleEngine => {
-      styleEngine.addComponentStyle(Component, defaultStyle).save()
+      styleEngine.addComponentStyle(Component.styleEngineTag, defaultStyle).save()
 
       // Since computed style sheets are memoized, compute the stylesheets for the component first
       // The component is likely to be reused many times so this will optimize component loading
@@ -106,7 +102,7 @@ export const withStyleSheets = (
   })
 
   WrappedComponent.defaultProps = Component.defaultProps
-  WrappedComponent.displayName = Component.displayName
+  WrappedComponent.displayName = `withStyleSheets(${Component.styleEngineTag})`
   WrappedComponent.propTypes = {
     ...(Component.propTypes || {}),
     style: PropTypes.object,

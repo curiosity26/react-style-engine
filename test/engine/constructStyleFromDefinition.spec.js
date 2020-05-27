@@ -14,7 +14,7 @@ describe("constructStyleFromDefinition", () => {
 
   it("generates styles with array value", () => {
     const style = constructStyleFromDefinition({
-      border: [ "1px", "solid", "blue" ]
+      border: [ "1px", "solid", "blue" ],
     })
 
     expect(style).toEqual("border: 1px solid blue;\n")
@@ -23,10 +23,10 @@ describe("constructStyleFromDefinition", () => {
   it("generates styles with complex object", () => {
     const style = constructStyleFromDefinition({
       border: {
-        width: '1px',
-        style: 'solid',
-        color: 'blue',
-      }
+        width: "1px",
+        style: "solid",
+        color: "blue",
+      },
     })
 
     expect(style).toEqual("border-width: 1px;\nborder-style: solid;\nborder-color: blue;\n")
@@ -34,7 +34,7 @@ describe("constructStyleFromDefinition", () => {
 
   it("generates styles from function value", () => {
     const style = constructStyleFromDefinition({
-      border: () => "1px solid blue"
+      border: () => "1px solid blue",
     })
 
     expect(style).toEqual("border: 1px solid blue;\n");
