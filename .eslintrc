@@ -1,6 +1,6 @@
 {
   "parser": "babel-eslint",
-  "extends": "plugin:react/recommended",
+  "extends": ["plugin:react/recommended", "plugin:@typescript-eslint/recommended" ],
   "parserOptions": {
     "ecmaVersion": 8,
     "sourceType": "module",
@@ -10,7 +10,8 @@
     }
   },
   "plugins": [
-    "react"
+    "react",
+    "@typescript-eslint"
   ],
   "env": {
     "shared-node-browser": true,

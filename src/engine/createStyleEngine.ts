@@ -1,10 +1,40 @@
-import constructStyleSheets       from "./constructStyleSheets"
+import constructStyleSheets, { Scales } from "./constructStyleSheets"
 import constructGlobalStyleSheets from "./constructGlobalStyleSheets"
-import hash                       from "./hash"
-import memoize                    from "./memoize"
+import hash    from "./hash"
+import memoize from "./memoize"
+import { StyleDefinition, StyleRules } from "./constructStyleFromDefinition";
+import { ReactElement } from "react";
 
-const memoizedConstructGlobalStyleSheets = memoize(constructGlobalStyleSheets)
+const memoizedConstructGlobalStyleSheets = memoize<StyleSheet[]>(constructGlobalStyleSheets)
 const memoizedConstructStyleSheets = memoize(constructStyleSheets)
+
+export type StyleEngineElement = ReactElement & { styleEngineTag: string }
+
+export type CreateStyleEngineOptions = {
+  getGlobalStyles: () =>  StyleRules,
+  getComponentsStyles: () => StyleRules,
+  getScales: () => Scales,
+  setGlobalStyles: (globalStyles: StyleRules) => void,
+  setComponentsStyles: (componentStyles: StyleRules) => void,
+  setScales: (scales: Scales) => void,
+}
+
+export type StyleEngine = {
+  addGlobalStyle: (selector: string, style: Exclude<StyleDefinition, string | string[]>) => StyleEngine;
+  addComponentStyle: (component: string | StyleEngineElement, style: Exclude<StyleDefinition, string | string[]>) => StyleEngine;
+  addScale: (alias: string, mediaQuery: string | MediaList) => StyleEngine;
+  getGlobalStyles: () => StyleRules;
+  getComponentStyleDefinition: (component: StyleEngineElement) => StyleDefinition;
+  getScales: () => Scales;
+  getScale: (alias: string) => string | MediaList;
+  computeGlobalStyleSheets: () => StyleSheet[];
+  computeStyleSheets: (Component: StyleEngineElement) => StyleSheet[];
+  clearGlobalStyleChanges: () => StyleEngine;
+  clearComponentStyleChanges: () => StyleEngine;
+  clearScaleChanges: () => StyleEngine;
+  clear: () => StyleEngine;
+  save: () => void;
+}
 
 export default ({
   getGlobalStyles,
@@ -13,7 +43,7 @@ export default ({
   setGlobalStyles,
   setComponentsStyles,
   setScales,
-}) => {
+}: CreateStyleEngineOptions): StyleEngine => {
   let pendingGlobals = Object.assign({}, getGlobalStyles())
   let pendingComponents = Object.assign({}, getComponentsStyles())
   let pendingScales = Object.assign({}, getScales())

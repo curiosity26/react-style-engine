@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, forwardRef } from "react"
 import PropTypes                                                   from "prop-types"
 import createStyleEngine                                           from "./engine/createStyleEngine"
 
-export { default as GlobalStyles }                                 from "./GlobalStyles"
+export { default as GlobalStyles } from "./GlobalStyles"
 
 const StyleContext = createContext()
 
@@ -64,7 +64,7 @@ export const withStyle = (
   })
 
   WrappedComponent.defaultProps = Component.defaultProps
-  WrappedComponent.displayName = `withStyles(${Component.styleEngineTag})`
+  WrappedComponent.displayName = `withStyles(${ Component.styleEngineTag })`
   WrappedComponent.propTypes = {
     ...(Component.propTypes || {}),
     style: PropTypes.object,
@@ -102,7 +102,7 @@ export const withStyleSheets = (
   })
 
   WrappedComponent.defaultProps = Component.defaultProps
-  WrappedComponent.displayName = `withStyleSheets(${Component.styleEngineTag})`
+  WrappedComponent.displayName = `withStyleSheets(${ Component.styleEngineTag })`
   WrappedComponent.propTypes = {
     ...(Component.propTypes || {}),
     style: PropTypes.object,

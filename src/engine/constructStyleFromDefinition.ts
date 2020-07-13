@@ -1,6 +1,11 @@
 import hyphenateStyleName from "./hyphenateStyleName"
 
-const convertStyle = (field, value) => {
+type BaseStyleDefinition = string | string[];
+export type StyleDefinitionFunc = () => BaseStyleDefinition;
+export type StyleDefinition = BaseStyleDefinition | StyleDefinitionFunc | Record<string, BaseStyleDefinition | StyleDefinitionFunc>;
+export type StyleRules = Record<string, StyleDefinition>;
+
+const convertStyle = (field: string, value: StyleDefinition | StyleRules): string => {
   if ("function" === typeof value) return convertStyle(field, value())
   if (Array.isArray(value)) return `${ hyphenateStyleName(field) }: ${ value.join(" ") };\n`
 
@@ -15,7 +20,7 @@ const convertStyle = (field, value) => {
   return `${ hyphenateStyleName(field) }: ${ value };\n`
 }
 
-export default (definition = {}) =>
+export default (definition: StyleDefinition | StyleRules): string =>
   Object.entries(definition)
-        .filter(([ , value ]) => "undefined" !== typeof value && null !== value)
+        .filter(([ , value ]) => !!value)
         .reduce((style, [ field, value ]) => style + convertStyle(field, value), "")
