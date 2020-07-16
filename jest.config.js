@@ -1,9 +1,13 @@
 module.exports = {
-  "setupFilesAfterEnv": [ "./test/setup.js" ],
+  "setupFilesAfterEnv": [ "./test/setup.ts" ],
   "collectCoverage": true,
   "collectCoverageFrom": [
-    "src/**/*.{js,jsx}",
+    "src/**/*.{ts,tsx}",
+    "!src/types.d.ts",
     "!**/node_modules/**",
     "!dist/**",
-  ]
+  ],
+  transform: {
+    "^.+\\.(js|jsx|ts|tsx)$": "<rootDir>/node_modules/babel-jest",
+  },
 }

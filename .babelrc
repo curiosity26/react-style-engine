@@ -1,5 +1,14 @@
 {
   "presets": [
+    [
+      "@babel/preset-typescript",
+      {
+        "isTSX": true,
+        "allowDeclareFields": true,
+        "allowNamespaces": true,
+        "allExtensions": true
+      }
+    ],
     "@babel/preset-react",
     [
       "@babel/preset-env",
@@ -14,6 +23,8 @@
     }
   },
   "plugins": [
+    "const-enum",
+    "@babel/plugin-transform-typescript",
     "@babel/plugin-proposal-object-rest-spread",
     "@babel/plugin-transform-react-jsx"
   ],

@@ -1,6 +1,7 @@
-import constructStyleSheets from "./constructStyleSheets"
+import constructStyleSheets from './constructStyleSheets'
+import { ConstructableStyleSheet, Scales, StyleRules } from '../types';
 
-export default (global, scales = {}) => {
+export default (global: StyleRules, scales: Scales = {}): ConstructableStyleSheet[] => {
   let styleSheets = []
 
   for (const selector in global) {

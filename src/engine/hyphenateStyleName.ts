@@ -22,9 +22,9 @@ const msPattern = /^ms-/;
  * As Modernizr suggests (http://modernizr.com/docs/#prefixed), an `ms` prefix
  * is converted to `-ms-`.
  */
-export default function hyphenateStyleName(name) {
+export default function hyphenateStyleName(name: string): string {
   return name
-  .replace(uppercasePattern, "-$1")
+  .replace(uppercasePattern, '-$1')
   .toLowerCase()
-  .replace(msPattern, "-ms-");
+  .replace(msPattern, '-ms-');
 }
