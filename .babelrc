@@ -5,7 +5,8 @@
       {
         "isTSX": true,
         "allowDeclareFields": true,
-        "allowNamespaces": true
+        "allowNamespaces": true,
+        "allExtensions": true
       }
     ],
     "@babel/preset-react",

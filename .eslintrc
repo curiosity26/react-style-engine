@@ -1,5 +1,5 @@
 {
-  "parser": "babel-eslint",
+  "parser": "@typescript-eslint/parser",
   "extends": ["plugin:react/recommended", "plugin:@typescript-eslint/recommended" ],
   "parserOptions": {
     "ecmaVersion": 8,
@@ -11,7 +11,7 @@
   },
   "plugins": [
     "react",
-    "@typescript-eslint"
+    "babel"
   ],
   "env": {
     "shared-node-browser": true,
@@ -34,12 +34,15 @@
         "ArrayExpression": "first",
         "ObjectExpression": "first",
         "MemberExpression": "off",
-        "ignoredNodes": [ "JSXAttribute", "JSXSpreadAttribute" ]
+        "ignoredNodes": [
+          "JSXAttribute",
+          "JSXSpreadAttribute"
+        ]
       }
     ],
     "quotes": [
       "error",
-      "double"
+      "single"
     ],
     "array-bracket-spacing": [
       "error",
@@ -63,6 +66,8 @@
     ],
     "space-in-parens": "error",
     "no-useless-catch": "error",
+    "no-empty-function": "off",
+    "@typescript-eslint/no-empty-function": "off",
     "radix": "error",
     "block-spacing": "error",
     "comma-dangle": [

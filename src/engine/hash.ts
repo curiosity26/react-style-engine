@@ -12,6 +12,6 @@ export const stringHash = (stringToHash: string): number => {
   return hash;
 }
 
-export const objectHash = (obj: object): number => stringHash(JSON.stringify(obj))
+export const objectHash = (obj: Record<string, unknown> | unknown[]): number => stringHash(JSON.stringify(obj))
 
-export default (o: string | object): number => "string" === typeof o ? stringHash(o) : objectHash(o)
+export default (o: string | number | Record<string, unknown> | unknown[]): number => 'string' === typeof o || 'number' === typeof o ? stringHash(`${o}`) : objectHash(o)

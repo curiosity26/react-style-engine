@@ -1,4 +1,4 @@
-import hash from "./hash"
+import hash from './hash'
 
 export default <T = unknown>(fn: (...args: unknown[]) => T, input: unknown[] = []): (...args: unknown[]) => T => {
   const cache: Record<number, T> = {}
