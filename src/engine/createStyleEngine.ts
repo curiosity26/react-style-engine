@@ -8,11 +8,11 @@ const memoizedConstructGlobalStyleSheets = memoize<ConstructableStyleSheet[]>(co
 const memoizedConstructStyleSheets = memoize(constructStyleSheets)
 
 type CreateStyleEngineOptions = {
-  getGlobalStyles: () =>  StyleDefinition,
-  getComponentsStyles: () => StyleDefinition,
+  getGlobalStyles: () =>  StyleDefinition | StyleRules,
+  getComponentsStyles: () => StyleDefinition | StyleRules,
   getScales: () => Scales,
-  setGlobalStyles: (globalStyles: StyleDefinition | StyleRules) => void,
-  setComponentsStyles: (componentStyles: StyleDefinition | StyleRules) => void,
+  setGlobalStyles: (globalStyles: StyleRules) => void,
+  setComponentsStyles: (componentStyles: StyleRules) => void,
   setScales: (scales: Scales) => void,
 }
 
@@ -38,7 +38,7 @@ export default ({
         throw new Error('Defined style must be an object')
       }
 
-      pendingGlobals[ selector ] = Object.assign({}, style) as StyleDefinition
+      pendingGlobals[ selector ] = Object.assign({}, style)
 
       return this
     },
@@ -89,12 +89,12 @@ export default ({
       return memoizedConstructStyleSheets(definition, getScales())
     },
     clearGlobalStyleChanges() {
-      pendingGlobals = Object.assign({}, getGlobalStyles()) as StyleDefinition
+      pendingGlobals = Object.assign({}, getGlobalStyles())
 
       return this
     },
     clearComponentStyleChanges() {
-      pendingComponents = Object.assign({}, getComponentsStyles()) as StyleDefinition
+      pendingComponents = Object.assign({}, getComponentsStyles())
 
       return this
     },
