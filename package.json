@@ -8,7 +8,8 @@
   },
   "scripts": {
     "build": "NODE_ENV=production $(npm bin)/babel --extensions \".ts,.tsx\" --ignore \"**/*.d.ts\" src --out-dir dist",
-    "test": "$(npm bin)/eslint . && $(npm bin)/jest"
+    "lint": "$(npm bin)/eslint src/**/* test/**/*",
+    "test": "npm run lint && $(npm bin)/jest"
   },
   "repository": {
     "type": "git",

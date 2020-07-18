@@ -111,6 +111,10 @@ describe('Create Style Engine', () => {
         expect(() => styleEngine.getComponentStyleDefinition(BadComponent))
         .toThrowError('Component must be a valid React component or the name of a valid React component.')
       })
+
+      it ('should compute empty array if no definition is found', () => {
+        expect(styleEngine.computeStyleSheets('')).toEqual([]);
+      })
     })
 
     describe('scales', () => {

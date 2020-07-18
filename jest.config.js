@@ -3,7 +3,7 @@ module.exports = {
   "collectCoverage": true,
   "collectCoverageFrom": [
     "src/**/*.{ts,tsx}",
-    "!src/types.d.ts",
+    "!src/types.ts",
     "!**/node_modules/**",
     "!dist/**",
   ],

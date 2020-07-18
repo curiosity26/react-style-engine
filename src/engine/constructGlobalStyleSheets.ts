@@ -1,18 +1,10 @@
 import constructStyleSheets from './constructStyleSheets'
-import { ConstructableStyleSheet, Scales, StyleRules } from '../types';
+import { ConstructableStyleSheet, Scales, StyleDefinition, StyleRules } from '../types';
 
-export default (global: StyleRules, scales: Scales = {}): ConstructableStyleSheet[] => {
-  let styleSheets = []
+export default (global: StyleRules, scales: Scales = {}): ConstructableStyleSheet[] =>
+  Object.entries(global).reduce(
+    (sheets: ConstructableStyleSheet[], [ selector, definition ]: [ string, StyleDefinition ]) => {
+      if (!definition) return sheets;
 
-  for (const selector in global) {
-    if (!global.hasOwnProperty(selector)) continue;
-
-    const definition = global[ selector ]
-
-    if (!definition) continue;
-
-    styleSheets = [ ...styleSheets, ...constructStyleSheets(definition, scales, selector) ]
-  }
-
-  return styleSheets
-}
+      return sheets.concat(constructStyleSheets(definition, scales, selector))
+    }, [])

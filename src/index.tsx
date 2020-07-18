@@ -78,14 +78,18 @@ type WithStyleParams = {
   style?: StyleRules
 }
 
+type StyledComponent = React.ForwardRefExoticComponent<
+  Pick<StyleEngineWrappedComponentsParams, React.ReactText> & React.RefAttributes<unknown>
+  >
+
 export const withStyle = (
   Component: StyleEngineComponent,
   { attributeName = 'style', styleEngineTag, style = {} }: WithStyleParams = {},
-): React.ForwardRefExoticComponent<React.PropsWithRef<StyleEngineWrappedComponentsParams>> => {
+): StyledComponent => {
   Component.styleEngineTag = Component.styleEngineTag || styleEngineTag || Component.displayName || Component.name
 
   const WrappedComponent = forwardRef(({ style: styleOverride = {}, ...props }: StyleEngineWrappedComponentsParams, ref) => {
-    const compProps = { ...(props || {}) }
+    const compProps = { ...(props || {}), ref }
     const styleEngine = useStyleEngine()
     useEffect(() => {
       styleEngine.addComponentStyle(Component, processStyle(style, compProps)).save()
@@ -94,7 +98,7 @@ export const withStyle = (
     const defaultStyle: StyleRules = styleEngine.getComponentStyleDefinition(Component)
     compProps[attributeName] = { ...defaultStyle, ...styleOverride }
 
-    return <Component { ...compProps } ref={ ref }/>
+    return <Component { ...compProps } />
   })
 
   WrappedComponent.defaultProps = Component.defaultProps
@@ -116,11 +120,11 @@ type WithStyleSheetsOptions = {
 export const withStyleSheets = (
   Component: StyleEngineComponent,
   { attributeName = 'styleSheets', styleEngineTag = '', style = {} }: WithStyleSheetsOptions = {},
-): React.ForwardRefExoticComponent<React.PropsWithRef<StyleEngineWrappedComponentsParams>> => {
+): StyledComponent => {
   Component.styleEngineTag = Component.styleEngineTag || styleEngineTag || Component.displayName || Component.name
 
   const WrappedComponent = forwardRef(({ style: styleOverride = {}, ...props }: StyleEngineWrappedComponentsParams, ref) => {
-    const compProps = { ...(props || {}) }
+    const compProps = { ...(props || {}), ref }
     const defaultStyle = processStyle(style, compProps);
 
     return <StyleConsumer>{styleEngine => {
@@ -138,7 +142,7 @@ export const withStyleSheets = (
         compProps[attributeName] = originalStyleSheets.concat(styleEngine.computeStyleSheets(styleOverride))
       }
 
-      return <Component { ...compProps } ref={ ref }/>
+      return <Component { ...compProps } />
     }}</StyleConsumer>
   })
 

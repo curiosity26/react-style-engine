@@ -38,7 +38,7 @@ describe('Style Engine Component', () => {
 
   it('should mount with default component style', () => {
     const ref = createRef()
-    const Component = React.forwardRef((props, ref) => <root.div { ...props } ref={ ref }>I am a div</root.div>)
+    const Component = (props) => <root.div { ...props } ref={ ref }>I am a div</root.div>
     Component.displayName = 'Component'
 
     const StyledComponent = withStyleSheets(Component)
@@ -67,7 +67,7 @@ describe('Style Engine Component', () => {
 
   it('should mount with default component style and override', () => {
     const ref = createRef()
-    const Component = React.forwardRef((props, ref) => <root.div { ...props } ref={ ref }>I am a div</root.div>)
+    const Component = (props) => <root.div { ...props } ref={ ref }>I am a div</root.div>
     Component.displayName = 'Component'
     const StyledComponent = withStyleSheets(Component)
     const wrapper = mount(<StyleProvider componentStyles={ {

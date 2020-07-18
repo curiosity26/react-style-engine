@@ -36,7 +36,7 @@ const reduceStyles = (scales: Scales) =>
 
     // Extract :host... styles: i.e. :host(class_on_host), :host:after, :host .child
     if ([ '(', ':', ' ', '&' ].includes(key[0]) || '-context' === key) {
-      const { hostRules = {} } = def
+      const { hostRules } = def
       const selector = '&' === key[0] ? key.substring(1) : key
 
       return { ...def, hostRules: { ...hostRules, [selector]: value } }
@@ -44,7 +44,7 @@ const reduceStyles = (scales: Scales) =>
 
     // Extract child styles: <child-element>
     if (60 === key.charCodeAt(0)) {
-      const { childRules = {} } = def
+      const { childRules } = def
       const selector = key.substring(1, key.lastIndexOf(String.fromCharCode(62))).trim()
 
       return { ...def, childRules: { ...childRules, [selector]: value } }
@@ -57,34 +57,42 @@ const reduceStyles = (scales: Scales) =>
     }
 
     // Extract regular css rules for use within a selector
-    const { rules = {} } = def
+    const { rules } = def
     return { ...def, rules: { ...rules, [key]: value } };
   }
 
-const stringifyStyle = selector => ([ innerSelector, rules ]) =>
+const stringifyStyle = selector => ([ innerSelector, rules ]: [ string, StyleDefinition ]): string =>
   `${selector}${innerSelector} {
     ${constructStyleFromDefinition(rules)}
   }`
 
-const buildStyleSheet = ({ rules, hostRules = {}, childRules = {}, media, selector = ':host', directives = [] }: StyleSheetDefinition) => {
+const reduceHostStyles = selector => (body: string[], [ key, rule ]: [ string, StyleDefinition ]): string[] => {
+  if (!rule) return body
+
+  body.push(stringifyStyle(selector)([ key, rule ]))
+
+  return body
+}
+
+const reduceChildStyles = (ruleBodies: string[], [ selector, rules ]: [string, StyleDefinition]): string[] => {
+  if (!selector || !rules || 'string' === typeof rules || Array.isArray(rules)) return ruleBodies;
+
+  ruleBodies.push(`${selector} {
+        ${constructStyleFromDefinition(rules)}
+      }`)
+
+  return ruleBodies;
+}
+
+const buildStyleSheet = ({ rules, hostRules, childRules, media, selector, directives }: StyleSheetDefinition) => {
   const styleSheet = new CSSStyleSheet() as unknown as ConstructableStyleSheet
   if (media) {
     styleSheet.media = media
   }
 
   const selectorBody = rules && constructStyleFromDefinition(rules)
-  const wrappedSelectorBody = Object.entries(hostRules)
-    .filter(([ key, rule ]) => key && ('undefined' !== typeof rule || null !== rule))
-    .map(stringifyStyle(selector))
-  const childSelectorBody = Object.entries(childRules).reduce((ruleBodies, [ selector, rules ]: [string, StyleDefinition]) => {
-    if (!selector || !rules || 'string' === typeof rules || Array.isArray(rules)) return ruleBodies;
-
-    ruleBodies.push(`${selector} {
-      ${constructStyleFromDefinition(rules)}
-    }`)
-
-    return ruleBodies;
-  }, [])
+  const wrappedSelectorBody = Object.entries(hostRules).reduce(reduceHostStyles(selector), [])
+  const childSelectorBody = Object.entries(childRules).reduce(reduceChildStyles, [])
 
 
   if (!selectorBody && !wrappedSelectorBody.length && !childSelectorBody.length && !directives.length) return
@@ -105,7 +113,7 @@ const buildStyleSheet = ({ rules, hostRules = {}, childRules = {}, media, select
   return styleSheet
 }
 
-export default (definition: Record<string, StyleRules | StyleDefinition | string> | StyleDefinition | undefined, scales: Scales = {}, selector = ':host'): ConstructableStyleSheet[] => {
+export default (definition?: Record<string, StyleRules | StyleDefinition | string> | StyleDefinition | undefined, scales: Scales = {}, selector = ':host'): ConstructableStyleSheet[] => {
   if (!definition) return [];
 
   const { directives, hostRules, childRules, rules, ...scaleRules } = Object.entries(definition)

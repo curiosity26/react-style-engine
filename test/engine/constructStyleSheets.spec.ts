@@ -10,7 +10,11 @@ describe('constructStyleSheets', () => {
   })
 
   it('should return an empty array if definition is undefined', () => {
-    expect(constructStyleSheets({})).toEqual([])
+    expect(constructStyleSheets()).toEqual([])
+  })
+
+  it('should return an empty array if value in rule map is undefined', () => {
+    expect(constructStyleSheets({ 'test': undefined })).toEqual([])
   })
 
   it('constructs a basic stylesheet', () => {
@@ -96,6 +100,7 @@ describe('constructStyleSheets', () => {
       '-context': {
         backgroundColor: 'blue',
       },
+      ' .isNullValue': undefined,
     })
 
     expect(stylesheets).toHaveLength(1)

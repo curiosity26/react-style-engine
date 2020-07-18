@@ -5,7 +5,7 @@
      "alwaysStrict": true,
      "checkJs": true,
      "declaration": true,
-     "lib": ["ESNext", ""DOM"],
+     "lib": ["ESNext", "DOM"],
      "outDir": "dist"
      "target": "ES2020"
    },
